@@ -27,10 +27,3 @@ The **Food Wastage Monitoring and Donation System** is an AI-powered web applica
 ### 🍽 3. Recipe Generation
 - Enter leftover ingredients
 - AI generates creative recipes using Groq API
-
-👩‍💻 Developed By
-
-Prakruti Nayak
-Teammates - Vyshnavi G R, Vighnesh, Sai Skanda
-B.E. in Information Science & Engineering  
-Final Year Major Project
