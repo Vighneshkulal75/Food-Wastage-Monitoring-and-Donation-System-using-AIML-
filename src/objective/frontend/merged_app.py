@@ -1,8 +1,4 @@
 # merged_app.py
-# Unified UI:
-# 1) Food Spoilage Detection & Demand Forecasting
-# 2) Donation Recommendation
-# 3) Recipe Generation
 
 import os
 import sys
@@ -15,10 +11,18 @@ from PIL import Image
 import streamlit as st
 
 # -------------------------------------------------------------------
-# PATH SETUP  (project root: food_donation_system)
+# PATH SETUP
 # -------------------------------------------------------------------
-BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+BASE_DIR = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "..", "..", "..")
+)
 sys.path.append(BASE_DIR)
+
+# -------------------------------------------------------------------
+# LOAD SECRETS SAFELY
+# -------------------------------------------------------------------
+GOOGLE_API_KEY = st.secrets.get("API_KEY", None)
+GROQ_API_KEY = st.secrets.get("GROQ_API_KEY", None)
 
 # -------------------------------------------------------------------
 # BACKEND IMPORTS
@@ -30,6 +34,7 @@ from src.objective.backend.food_aid_logic import (
     calculate_metrics,
     get_demands_for_supermarket,
 )
+
 from src.objective.backend.freshness_predictor import predict_freshness_from_pil
 
 from src.objective.backend.backend import (
@@ -40,10 +45,8 @@ from src.objective.backend.backend import (
     google_search_link,
     directions_distance_km,
 )
+
 from src.objective.backend.recipe_generator import generate_recipes
-
-from config import API_KEY
-
 
 # -------------------------------------------------------------------
 # STREAMLIT CONFIG
@@ -55,9 +58,10 @@ st.set_page_config(
 )
 
 # -------------------------------------------------------------------
-# GLOBAL DATA (NGO CSV)
+# GLOBAL DATA
 # -------------------------------------------------------------------
 NGO_CSV_PATH = os.path.join(BASE_DIR, "datasets", "food_banks.csv")
+
 
 
 # ===================================================================
@@ -508,7 +512,7 @@ def donation_ui():
     if use_current:
         try:
             with st.spinner("Detecting your location..."):
-                lat, lng, acc = geolocate_device(API_KEY)
+                lat, lng, acc = geolocate_device(GOOGLE_API_KEY)
                 user_lat, user_lng = lat, lng
                 st.success(f"✅ Auto-detected location (accuracy ~ {acc} meters).")
                 st.info(f"Coordinates: {user_lat:.6f}, {user_lng:.6f}")
@@ -523,7 +527,7 @@ def donation_ui():
         if address:
             try:
                 with st.spinner("Geocoding address..."):
-                    lat, lng, formatted = geocode_address(address, API_KEY)
+                    lat, lng, formatted = geocode_address(address, GOOGLE_API_KEY)
                     user_lat, user_lng = lat, lng
                     st.success(f"✅ Location found: {formatted}")
                     st.info(f"Coordinates: {user_lat:.6f}, {user_lng:.6f}")
@@ -540,7 +544,7 @@ def donation_ui():
     if user_lat and user_lng:
         st.info("⏳ Calculating road distances to all NGOs... please wait.")
         try:
-            nearby = find_nearby(data, user_lat, user_lng, API_KEY, radius_km=5.0)
+            nearby = find_nearby(data, user_lat, user_lng, GOOGLE_API_KEY, radius_km=5.0)
 
             if not nearby.empty:
                 nearby = nearby.reset_index(drop=True)
@@ -548,7 +552,7 @@ def donation_ui():
                 for i in range(TOPN):
                     row = nearby.loc[i]
                     precise = directions_distance_km(
-                        user_lat, user_lng, row["latitude"], row["longitude"], API_KEY
+                        user_lat, user_lng, row["latitude"], row["longitude"], GOOGLE_API_KEY
                     )
                     if precise is not None:
                         nearby.at[i, "distance_km"] = precise
@@ -623,15 +627,15 @@ def recipe_ui():
             st.error("Please enter at least one ingredient.")
             return
 
-        try:
-            api_key = st.secrets["GROQ_API_KEY"]
-        except Exception:
-            st.error("Missing GROQ_API_KEY in .streamlit/secrets.toml")
+        if not GROQ_API_KEY:
+            st.error("GROQ_API_KEY missing in Streamlit Secrets.")
             return
+
+        api_key = GROQ_API_KEY
 
         with st.spinner("Cooking some ideas..."):
             try:
-                result = generate_recipes(ingredients, api_key)
+                result = generate_recipes(ingredients, GROQ_API_KEY)
                 st.markdown("### 📝 Suggested Recipes")
                 st.write(result)
             except Exception as e:
