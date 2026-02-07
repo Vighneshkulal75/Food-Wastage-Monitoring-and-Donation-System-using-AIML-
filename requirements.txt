@@ -1,1 +1,8 @@
-
+streamlit
+pandas
+numpy
+scikit-learn
+tensorflow
+pytorch
+pillow
+requests
