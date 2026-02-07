@@ -1,0 +1,36 @@
+🍱 Food Wastage Monitoring and Donation System
+
+🔗 Live App: [Click here to open] (https://food-wastage-monitoring-and-donation-system---major-projectgit.streamlit.app/)
+
+📂 GitHub Repository: You're already here!
+
+
+📌 Project Overview
+
+The **Food Wastage Monitoring and Donation System** is an AI-powered web application designed to reduce food wastage by:
+
+- 🥬 Detecting food freshness using Machine Learning
+- 🏪 Connecting supermarkets with nearby NGOs
+- 📍 Recommending nearest food banks using geolocation
+- 🍽 Generating creative recipes from leftover ingredients
+
+### 🍎 1. Food Spoilage Detection
+- Upload or capture food images
+- AI predicts whether food is safe to eat
+- Helps supermarkets reduce waste
+
+### 🙏 2. Donation Recommendation
+- Detects user location automatically
+- Finds nearest NGOs within 5 km (if no nearby NGOs found then this system suggests alternative options like composting and animal feed)
+- Provides Google Maps directions with the help of Google Maps API (Geolocation, Geocoding, Distance Matrix)
+
+### 🍽 3. Recipe Generation
+- Enter leftover ingredients
+- AI generates creative recipes using Groq API
+
+👩‍💻 Developed By
+
+Prakruti Nayak
+Teammates - Vyshnavi G R, Vighnesh, Sai Skanda
+B.E. in Information Science & Engineering  
+Final Year Major Project
