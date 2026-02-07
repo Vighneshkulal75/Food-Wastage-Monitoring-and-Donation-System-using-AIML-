@@ -1,11 +1,35 @@
 # freshness_predictor.py
 # Simple wrapper around your Keras model + CLIP fallback.
 # Public function: predict_freshness_from_pil(pil.Image) -> dict
+import gdown
 
 import os, traceback
 from PIL import Image
 import numpy as np
 import pickle
+
+# ---------------- GOOGLE DRIVE MODEL IDS ----------------
+MODEL_IDS = {
+    "fruit_model_retrained.h5": "1yOhNvH71E0fZqrbXnx0LL23qbIhPDP5T",
+    "fruit_model.h5": "1RSPBmSpx425vvSloWwX24fGUNFlx9927",
+    "label_encoder_v5.pkl": "1NKJjROuaQ9fl7wj69dhWybfR4jCxAg7L",
+    "label_encoder_v2.pkl": "1QJj6sV7_eh0cxzWziLZQh9YXHSCjOsd5",
+}
+
+def download_if_missing():
+    os.makedirs(MODELS_DIR, exist_ok=True)
+
+    for filename, file_id in MODEL_IDS.items():
+        file_path = os.path.join(MODELS_DIR, filename)
+
+        if not os.path.exists(file_path):
+            print(f"[predictor] Downloading {filename} from Google Drive...")
+            url = f"https://drive.google.com/uc?id={file_id}"
+            try:
+                gdown.download(url, file_path, quiet=False)
+                print(f"[predictor] Downloaded: {filename}")
+            except Exception as e:
+                print(f"[predictor] Failed to download {filename}:", e)
 
 # -------------------------------------------------
 # Make paths robust: point to models/ relative to project root
@@ -84,8 +108,12 @@ def load_any_label_encoder(paths):
             print("[predictor] Label encoder path does not exist:", p)
     return None
 
+# Download models first (for deployment)
+download_if_missing()
+
 keras_model = load_any_keras_model(MODEL_PATHS)
 label_encoder = load_any_label_encoder(LABEL_ENCODER_PATHS)
+
 
 # CLIP caching
 _clip_cache = None
