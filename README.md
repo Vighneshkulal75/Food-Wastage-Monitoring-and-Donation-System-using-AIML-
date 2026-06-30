@@ -2,9 +2,6 @@
 
 🔗 Live App: [Click here to open] (https://food-wastage-monitoring-and-donation-system---major-projectgit.streamlit.app/)
 
-📂 GitHub Repository: You're already here!
-
-
 📌 Project Overview
 
 The **Food Wastage Monitoring and Donation System** is an AI-powered web application designed to reduce food wastage by:
