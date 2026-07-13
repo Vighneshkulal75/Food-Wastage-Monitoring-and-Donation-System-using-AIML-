@@ -1,4 +1,4 @@
-🍱 Food Wastage Monitoring and Donation System
+🍱 Food Wastage Monitoring and Donation Systems
 
 🔗 Live App: [Click here to open] (https://food-wastage-monitoring-and-donation-system---major-projectgit.streamlit.app/)
 
